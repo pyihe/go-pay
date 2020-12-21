@@ -28,9 +28,9 @@ type accessToken struct {
 
 type Options func(c *checker)
 
-func WithPackageName(pn string) Options {
+func WithPackageName(packageName string) Options {
 	return func(c *checker) {
-		c.googlePackageName = pn
+		c.googlePackageName = packageName
 	}
 }
 
@@ -132,7 +132,7 @@ func (c *checker) CheckGooglePayToken(token, productId string) (*GooglePayRespon
 		}
 	}
 
-	queryUrl := fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?access_token=%s", c.googlePackageName, productId, token, c.tokenData.AccessToken)
+	queryUrl := c.getGoogleVerifyUrl(productId, token)
 	response, err := http.Get(queryUrl)
 	if err != nil {
 		return nil, err
@@ -198,4 +198,8 @@ func (c *checker) getGoogleRefreshToken(code string) (string, error) {
 	}
 	c.tokenData.CreatedAt = time.Now().Unix()
 	return c.tokenData.RefreshToken, nil
+}
+
+func (c *checker) getGoogleVerifyUrl(productID string, payToken string) string {
+	return fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?access_token=%s", c.googlePackageName, productID, payToken, c.tokenData.AccessToken)
 }

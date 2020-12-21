@@ -2,7 +2,6 @@ package go_pay
 
 import (
 	"errors"
-	"fmt"
 )
 
 const (
@@ -138,6 +137,3 @@ type (
 	}
 )
 
-func getGoogleVerifyUrl(packageName string, productID string, payToken string, accessToken string) string {
-	return fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?access_token=%s", packageName, productID, payToken, accessToken)
-}
